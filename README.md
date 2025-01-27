@@ -9,7 +9,7 @@ This repository is a customized fork of Uniswap V3, implementing a dynamic fee m
 ## Key Features
 
 1. **Dynamic Fee Model**
-   - The dynamic fee model adjusts based on market conditions such as volatility, liquidity, or price movements. See the [dynamic fee documentation](./customized_v3Pools/README.md) for details.
+   - The dynamic fee model adjusts based on market conditions such as volatility, liquidity, or price movements. See the [dynamic fee documentation](https://github.com/nobita851/customized_uniswapV3/blob/main/README.md) for details.
 
 2. **Customized v3-core Submodule**
    - The v3-core submodule has been customized to include:
