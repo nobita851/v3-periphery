@@ -1,52 +1,83 @@
-# Uniswap V3 Periphery
+# Uniswap V3 Fork with Dynamic Fees
 
-[![Tests](https://github.com/Uniswap/uniswap-v3-periphery/workflows/Tests/badge.svg)](https://github.com/Uniswap/uniswap-v3-periphery/actions?query=workflow%3ATests)
-[![Lint](https://github.com/Uniswap/uniswap-v3-periphery/workflows/Lint/badge.svg)](https://github.com/Uniswap/uniswap-v3-periphery/actions?query=workflow%3ALint)
+## Overview
 
-This repository contains the periphery smart contracts for the Uniswap V3 Protocol.
-For the lower level core contracts, see the [uniswap-v3-core](https://github.com/Uniswap/uniswap-v3-core)
-repository.
+This repository is a customized fork of Uniswap V3, implementing a dynamic fee model inspired by Nezlobin's directional fee mechanism. The project has all necessary modifications for functionality and testing. This document provides an overview of the changes, deployment instructions, and additional resources for interacting with the contracts.
 
-## Bug bounty
+---
 
-This repository is subject to the Uniswap V3 bug bounty program,
-per the terms defined [here](./bug-bounty.md).
+## Key Features
 
-## Local deployment
+1. **Dynamic Fee Model**
+   - The dynamic fee model adjusts based on market conditions such as volatility, liquidity, or price movements. See the [dynamic fee documentation](./customized_v3Pools/README.md) for details.
 
-In order to deploy this code to a local testnet, you should install the npm package
-`@uniswap/v3-periphery`
-and import bytecode imported from artifacts located at
-`@uniswap/v3-periphery/artifacts/contracts/*/*.json`.
-For example:
+2. **Customized v3-core Submodule**
+   - The v3-core submodule has been customized to include:
+     - Dynamic fee logic.
+   - All changes have been documented in the submodule's `README.md`.
 
-```typescript
-import {
-  abi as SWAP_ROUTER_ABI,
-  bytecode as SWAP_ROUTER_BYTECODE,
-} from '@uniswap/v3-periphery/artifacts/contracts/SwapRouter.sol/SwapRouter.json'
+3. **Simplified Deployment**
+   - Certain libraries were removed from the `PositionDescriptor` in the v3-periphery module to streamline deployment.
 
-// deploy the bytecode
-```
+4. **Init Code Hash**
+    - Adjusted `POOL_INIT_CODE_HASH` for accurate computation of pool addresses.
 
-This will ensure that you are testing against the same bytecode that is deployed to
-mainnet and public testnets, and all Uniswap code will correctly interoperate with
-your local deployment.
+5. **Deployment Script**
+   - A script called `deployAndTest` is included to facilitate the deployment and testing process.
 
-## Using solidity interfaces
+---
 
-The Uniswap v3 periphery interfaces are available for import into solidity smart contracts
-via the npm artifact `@uniswap/v3-periphery`, e.g.:
+## Deployment Instructions
 
-```solidity
-import '@uniswap/v3-periphery/contracts/interfaces/ISwapRouter.sol';
+### Prerequisites
 
-contract MyContract {
-  ISwapRouter router;
+1. Install dependencies:
+   ```bash
+   npm install
+   ```
 
-  function doSomethingWithSwapRouter() {
-    // router.exactInput(...);
-  }
-}
+2. Initialize the submodule:
+   ```bash
+   git submodule update --init --recursive
+   ```
 
-```
+3. Ensure you have the necessary environment variables configured (e.g., private keys, RPC URLs).
+
+### Steps
+
+1. **Deploy the Customized v3-core:**
+   - Navigate to the `customized_v3Pools` submodule directory and deploy the factory contract by running `deploy.js` script.
+   - Save the deployed `factory` address for use in subsequent steps.
+
+2. **Deploy v3-periphery:**
+   - Update the `factory` address in the `deployAndTest` script.
+   - Run the script to deploy and test the periphery contracts:
+     ```bash
+     node scripts/deployAndTest.js
+     ```
+
+3. **Verify Deployment:**
+   - Interact with the deployed contracts on the testnet to ensure functionality.
+
+---
+
+---
+
+## Deployed Contract Addresses
+
+- **Factory Address:** [0x5bfC27746aD3F24FaF7489D9F5F258B405041168](https://sepolia.arbiscan.io/address/0x5bfC27746aD3F24FaF7489D9F5F258B405041168)
+- **Router Address:** [0xC293693495E31a83d02940c8484C58790876975c](https://sepolia.arbiscan.io/address/0xc293693495e31a83d02940c8484c58790876975c)
+- **NonFungiblePositionManager Address:** [0xb38C0925fe388737be5A91CfA31De5Bc4Cb4D191](https://sepolia.arbiscan.io/address/0xb38C0925fe388737be5A91CfA31De5Bc4Cb4D191)
+- **Pool Examples:** [0x4F5b5d0eAde6eED20C8B741F1BC0d843B9b4BE54](https://sepolia.arbiscan.io/address/0x4F5b5d0eAde6eED20C8B741F1BC0d843B9b4BE54)  
+
+---
+
+## Additional Resources
+
+- [Dynamic Fee Documentation](./customized_v3Pools/README.md)
+
+---
+
+## References
+
+[Nezlobin's tweet](https://x.com/0x94305/status/1674857993740111872).
